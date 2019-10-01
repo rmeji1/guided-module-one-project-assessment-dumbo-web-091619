@@ -13,17 +13,30 @@ def played_before
     if have_they_played_before == true
         User.find_user
     else
-        User.create_user
+        user = User.create_user
+        character = Character.create_character(user)
+        return user
     end
 end
 
-welcome
-user = played_before
+while true do
+    welcome
+    user = played_before
+    
+    game = Game.create(user:user)
+    # game.menu
+    # contiune_game = true
+    game.menu
+    # while contiune_game 
+    # end
 
-game1 = Game.create(user:user)
-game1.run
+end
 
-binding.pry
+
+# get characterthey want to start game 
+# 
+# if "view_ca"
+# binding.pry
 
 
 puts "Run Goodbye"

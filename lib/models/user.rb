@@ -30,17 +30,18 @@ class User < ActiveRecord::Base
         user_found
     end
 
-    def update_user
+    def update_user(game)
         change_name = @@prompt.ask("What would you like your new username to be?")
         self.update(username: change_name)
         puts "Your username is now #{change_name}"
+        game.menu
     end
 
     def delete_user
         delete = @@prompt.yes?("Are you sure you want to delete your user?")
         if delete == true
             self.delete
-            exit
+            # exit
         end
     end
 

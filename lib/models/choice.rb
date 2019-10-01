@@ -20,7 +20,7 @@ class Choice < ActiveRecord::Base
 
     def self.select_option
         @@options.sample
-        # FOUNTION
+        # FRIEND_OR_FOE
     end
 
     def show_menu

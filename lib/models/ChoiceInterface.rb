@@ -1,6 +1,6 @@
 require_relative "OptionModule"
 class ChoiceInterface 
-  include OptionModule::Options, OptionModule::FoutainChoices,  OptionModule::FightChoices
+  include OptionModule::Options, OptionModule::FriendOrFoe,  OptionModule::FightChoices, OptionModule::RiverChoices
   attr_reader :prompt
 
   def initialize
@@ -23,8 +23,10 @@ class ChoiceInterface
     case option
     when FIGHT
       Menu.new(prompt:FIGHT_PROMPT , options: FIGHT_CHOICES)
-    when FOUNTION
-      Menu.new(prompt:FOUNTION_PROMPT, options: FOUNTION_CHOICES)
+    when FRIEND_OR_FOE
+      Menu.new(prompt:FRIEND_OR_FOE_PROMPT, options: FRIEND_OR_FOE_CHOICES)
+    when RIVER
+      Menu.new(prompt:RIVER_PROMPT, options: RIVER_CHOICES)
     end
   end
 end

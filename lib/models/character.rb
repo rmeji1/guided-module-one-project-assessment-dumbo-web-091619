@@ -8,12 +8,13 @@ class Character < ActiveRecord::Base
     @@prompt = TTY::Prompt.new
 
 
-    def self.create_character
+    def self.create_character(user)
         new_name = @@prompt.ask("What would you like to name your character?")
-        new_character = Character.create(name: new_name, alive:true)
+        new_character = Character.create(name: new_name, alive:true, user: user)
         new_class = @@prompt.select("What would you like your class to be?", %w(Warrior Mage))
         new_character.update(class_type: new_class)
         add_health_and_strength(new_character, new_class)
+        new_character
     end
 
     def self.add_health_and_strength(new_character, new_class)
