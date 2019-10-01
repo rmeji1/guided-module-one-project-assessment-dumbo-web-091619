@@ -27,7 +27,6 @@ class Character < ActiveRecord::Base
                 new_strength = rand(5..10)
                 new_character.strength = new_strength
             end
-
     end
 
     def self.find_character

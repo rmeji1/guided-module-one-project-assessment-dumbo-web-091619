@@ -6,7 +6,7 @@ class Choice < ActiveRecord::Base
     belongs_to :result
     has_one :monster, through: :fight
 
-    @@options = [FIGHT, FOUNTION, GO_AGAIN] 
+    @@options = OPTIONS
 
     def self.create(args)
         choice = super
@@ -15,12 +15,12 @@ class Choice < ActiveRecord::Base
             fight = Fight.create(monster: Monster.get_monster_that_hasnt_fought(choice.character))
             choice.update(fight: fight)
         end
-        choice
+        return choice
     end
 
     def self.select_option
         @@options.sample
-        # FIGHT
+        # FOUNTION
     end
 
     def show_menu
