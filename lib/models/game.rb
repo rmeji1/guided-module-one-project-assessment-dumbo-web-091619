@@ -3,30 +3,39 @@ require 'tty-prompt'
 class Game < ActiveRecord::Base
     belongs_to :user
 
-    # @@prompt = TTY::Prompt.new
-    
-    # puts "Welcome to our game!"
-    # puts User.all
+    @@prompt = TTY::Prompt.new
 
-    # played_before = @@prompt.yes?("Have you played this game before?")
+    def character_list
+        list = @@prompt.yes?("Would you like to see your characters?")
+        if list == true
+            user_characters = user.characters.map(&:name)
+            if user_characters.empty?
+                puts "You don't have any characters."
+                new_character = @@prompt.ask?("Would you like to create a new character?")
+                if new_character == true
+                    Character.create_character
+                end
+            else
+                puts user_characters
+            end
+        else
+            puts "Exit"
+        end
+        user_characters
+    end
 
-    # if played_before == true
-    #         Ureturning_username = @@prompt.ask("What is your username?")
-    #         User.find_by(username: returning_username)
-    #         if User.find_user != nil
-    #             puts "Welcome back, #{User.find_user.username}!"
-    #         else
-    #             no_user = @@prompt.yes?("I'm sorry, I can't find you in the database. Would you like to create a new user?")
-    #             if no_user == true
-    #                 User.create_user
-    #             else
-    #                 puts "See you later"
-    #                 exit
-    #             end
-    #         end
-    #     else
-    #         User.create_user
-    #     end
+    def pick_character
+        @@prompt.select("Which character would you like to use?", user.characters.map{|character| {character.name => character.id}})      
+    end
+
+    # def run
+    #     character_list
+    #     pick_character
+    # end
+
+    def menu
+    end
+
 
 
     
