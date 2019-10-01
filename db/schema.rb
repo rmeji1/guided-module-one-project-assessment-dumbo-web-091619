@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2019_09_30_195044) do
     t.integer "character_id"
     t.integer "result_id"
     t.string "option"
+    t.string "choice_made"
   end
 
   create_table "fights", force: :cascade do |t|

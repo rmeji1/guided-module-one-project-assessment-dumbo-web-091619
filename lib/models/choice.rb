@@ -1,6 +1,32 @@
+
 class Choice < ActiveRecord::Base
-    has_many :fights
+    include OptionModule::Options
+    has_one :fight
     belongs_to :character
     belongs_to :result
-    has_many :monsters, through: :fights
+    has_one :monster, through: :fight
+
+    @@options = [FIGHT, FOUNTION, GO_AGAIN] 
+
+    def self.create(args)
+        choice = super
+        choice.update(option: self.select_option)
+        if choice.option == FIGHT
+            fight = Fight.create(monster: Monster.get_monster_that_hasnt_fought(choice.character))
+            choice.update(fight: fight)
+        end
+        choice
+    end
+
+    def self.select_option
+        @@options.sample
+        # FIGHT
+    end
+
+    def show_menu
+        prompt = ChoiceInterface.new()
+        prompt_return = prompt.show(option)
+        self.update(choice_made: prompt_return)
+    end
+
 end
