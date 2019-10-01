@@ -6,8 +6,6 @@ class Result < ActiveRecord::Base
     has_many :fights, through: :choice
 
     def outcome
-        p choice.option
-        p choice.choice_made
         case choice.option
         when FIGHT
             option_is_fight(choice.choice_made)
@@ -16,13 +14,20 @@ class Result < ActiveRecord::Base
         end
     end
     
-    private 
     def option_is_fight(choice_made)
         case choice_made
         when FIGHT_CHOICE
-            puts "Add method here that takes away points from user or monster. Maybe?"
+            self.fight!
         when RUN
-            puts "Character is scared and decided to run! HAHAHA!"
+            self.run!
         end
+    end
+    
+    def fight!
+        puts "Add method here that takes away points from user or monster. Maybe?"
+    end
+    
+    def run!
+        puts "Character is scared and decided to run! HAHAHA!"
     end
 end

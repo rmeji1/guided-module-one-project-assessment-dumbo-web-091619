@@ -35,14 +35,24 @@ end
 
 case start
 when NORTH
-  choice = Choice.create(character: character1)
-  # choice.fight = Fight.create(monster: Monster.create(name: "Monster1", health:10, fight_damage: 20, run_damage:15))
-  choice.show_menu
-  result = Result.create(choice: choice)
-  result.outcome
+  while character1.choices.count < 3 do
+    # system "clear"
+    choice = Choice.create(character: character1)
+    choice.show_menu
+    result = Result.create(choice: choice)
+    result.outcome
+  end 
 else
   puts "Bye bye"
 end
 
+character1.save()
+p character1.choices
+
+character1.reload()
+character1.choices.delete_all
+p character1.choices
+
+puts "Yay! you won the game back to main menu"
 # binding.pry
 # puts "hello world"

@@ -2,29 +2,29 @@ require_relative "OptionModule"
 class ChoiceInterface 
   include OptionModule::Options, OptionModule::FoutainChoices,  OptionModule::FightChoices
   attr_reader :prompt
+
   def initialize
     @prompt =  TTY::Prompt.new
   end
   
   def show(option)
     menu = menu_options
-    case option
-    when FIGHT
-      @prompt.select(menu_options[:FIGHT].prompt, menu_options[:FIGHT].options)
-    when FOUNTION
-      prompt.select(menu[:FOUNTION].prompt, menu[:FOUNTION].options)
-    when GO_AGAIN
-      prompt.say("Lucky! Contiune!")
-    else
-    end 
+    prompt.select(menu_options[option].prompt, menu_options[option].options)
   end
 
   def menu_options
-    {
-      FIGHT: Menu.new(prompt:"Oh no! You see an ogre in front of you. Do you fight or run away?",
-              options:[FIGHT_CHOICE, RUN]),
-      FOUNTION: Menu.new(prompt:"You have come across the fountian of youth! Would you like to", 
-              options: [DRINK, WALK_AWAY])
-    }
+    OPTIONS.reduce({}) do |hash, option|
+      hash[option] = get_menu_for(option)
+      hash
+    end
+  end
+
+  def get_menu_for(option)
+    case option
+    when FIGHT
+      Menu.new(prompt:FIGHT_PROMPT , options: FIGHT_CHOICES)
+    when FOUNTION
+      Menu.new(prompt:FOUNTION_PROMPT, options: FOUNTION_CHOICES)
+    end
   end
 end
