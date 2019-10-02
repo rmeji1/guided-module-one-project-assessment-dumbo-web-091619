@@ -10,20 +10,40 @@ class Game < ActiveRecord::Base
     def character_list
         list = true
         if list == true
-            user_characters = user.characters.map(&:name)
-            if user_characters.empty?
-                puts "You don't have any characters."
-                new_character = @@prompt.ask?("Would you like to create a new character?")
-                if new_character == true
-                    Character.create_character
+            # if user.characters == undefined
+                # user_characters = []
+            # else
+                user_characters = user.characters.map do |character|
+                    {character.name => character.id}
+                end 
+            # end
+
+            user_characters << {"Go Back!" => -1}
+            # if user_characters.empty?
+            #     puts "You don't have any characters."
+            #     new_character = @@prompt.ask?("Would you like to create a new character?")
+            #     if new_character == true
+            #         Character.create_character
+            #         prompt_to_go_to_main_menu
+            #     end
+            # else
+                user_input = @@prompt.select("Select a character to view stats, or go back to the main menu", user_characters)
+                if user_input == -1 
+                    self.menu
+                else
+                    Character.read_stats(Character.find(user_input))
+                    prompt_to_go_to_main_menu
                 end
-            else
-                puts user_characters
-            end
+                binding.pry 
         else
             puts "Exit"
         end
-        user_characters
+        self.menu
+    end
+
+    def prompt_to_go_to_main_menu
+        @@prompt.select("", ["Go back to main menu"])
+        self.menu
     end
 
     def pick_character
@@ -35,12 +55,16 @@ class Game < ActiveRecord::Base
     #     pick_character
     # end
 
+    def create_character
+        Character.create_character(user)
+        prompt_to_go_to_main_menu
+    end
     def menu
         system "clear"
         @@prompt.select("Please select what you like to do") do |menu|
             menu.choice "Start Game", -> {start_game}
+            menu.choice "Create a new character", -> {create_character}
             menu.choice "Look at your characters", -> {character_list}
-            #add an option to look at character stats
             menu.choice "Edit your info", -> {user.update_user(self)}
             menu.choice "Delete your profile", -> {user.delete_user}
             menu.choice "Exit", -> { exit }

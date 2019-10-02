@@ -19,7 +19,9 @@ class User < ActiveRecord::Base
         if user_found == nil
            new_user = @@prompt.yes?("I'm sorry, we can't find your username. Would you like to create a new username?")
            if new_user == true
-            self.create_user
+            new_user = self.create_user
+            Character.create_character(new_user)
+            user_found = new_user
            else
             puts "See you later"
             exit
@@ -41,7 +43,8 @@ class User < ActiveRecord::Base
         delete = @@prompt.yes?("Are you sure you want to delete your user?")
         if delete == true
             self.delete
-            # exit
+            system "clear"
+            GameRunner.new.run
         end
     end
 

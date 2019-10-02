@@ -14,28 +14,33 @@ class Character < ActiveRecord::Base
         new_class = @@prompt.select("What would you like your class to be?", %w(Warrior Mage))
         new_character.update(class_type: new_class)
         add_health_and_strength(new_character, new_class)
+        sleep 1
         new_character
     end
 
     def self.add_health_and_strength(new_character, new_class)
         if new_class == "Warrior"
             puts "Roll for health"
-            new_health = rand(5..10)
+            new_health = rand(40..60)
             new_character.update(health: new_health)
-            puts "Your new health is #{new_health}"
-            puts "Roll for strength"
-            new_strength = rand(1..5)
-            new_character.update(strength: new_strength)
-            puts "Your new strength is #{new_strength}"
-        else
-            puts "Roll for health"
-            new_health = rand(1..5)
-            new_character.update(health: new_health)
-            puts "Your new health is #{new_health}"
+            sleep 1
+            puts "Your health is #{new_health}"
             puts "Roll for strength"
             new_strength = rand(5..10)
             new_character.update(strength: new_strength)
-            puts "Your new strength is #{new_strength}"
+            sleep 1
+            puts "Your strength is #{new_strength}"
+        else
+            puts "Roll for health"
+            new_health = rand(20..40)
+            new_character.update(health: new_health)
+            sleep 1
+            puts "Your health is #{new_health}"
+            puts "Roll for strength"
+            new_strength = rand(10..15)
+            new_character.update(strength: new_strength)
+            sleep 1
+            puts "Your strength is #{new_strength}"
         end
     end
 
@@ -64,7 +69,6 @@ class Character < ActiveRecord::Base
         puts "Your health is #{found_character.health}"
         puts "Your strength is #{found_character.strength}"
         puts "You are #{found_character.alive ? 'alive' : 'dead'}"
-
     end
 
     # def update_character
