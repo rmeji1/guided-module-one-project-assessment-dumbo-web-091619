@@ -1,7 +1,8 @@
 require 'tty-prompt'
 require_relative 'OptionModule'
+require_relative 'ArtModule'
 class Game < ActiveRecord::Base
-    include OptionModule::Options,  OptionModule::FightChoices
+    include OptionModule::Options,  OptionModule::FightChoices, ArtModule
     belongs_to :user
     attr_reader :character_old_health
     
@@ -72,6 +73,7 @@ class Game < ActiveRecord::Base
     def begin_game_for_character(character)
         # system "clear"
         character.update(current_health: character.max_health)
+        puts FOREST_IMAGE
         start = @@prompt.select("You're standing in the middle of a dense forest. There are four paths: one going north, one going east, one going south, and one going west. Which path do you take?") do |prompt|
             prompt.choice NORTH
             prompt.choice EAST
@@ -84,7 +86,20 @@ class Game < ActiveRecord::Base
             choice.show_menu
             result = Result.create(choice: choice)
             if result.outcome
-              @@prompt.say("Oh no you lost", color: :red) 
+            lost = <<-ASCII
+
+▓██   ██▓ ▒█████   █    ██     ██▓     ▒█████    ██████ ▄▄▄█████▓ ▐██▌  ▐██▌  ▐██▌ 
+▒██  ██▒▒██▒  ██▒ ██  ▓██▒   ▓██▒    ▒██▒  ██▒▒██    ▒ ▓  ██▒ ▓▒ ▐██▌  ▐██▌  ▐██▌ 
+ ▒██ ██░▒██░  ██▒▓██  ▒██░   ▒██░    ▒██░  ██▒░ ▓██▄   ▒ ▓██░ ▒░ ▐██▌  ▐██▌  ▐██▌ 
+ ░ ▐██▓░▒██   ██░▓▓█  ░██░   ▒██░    ▒██   ██░  ▒   ██▒░ ▓██▓ ░  ▓██▒  ▓██▒  ▓██▒ 
+ ░ ██▒▓░░ ████▓▒░▒▒█████▓    ░██████▒░ ████▓▒░▒██████▒▒  ▒██▒ ░  ▒▄▄   ▒▄▄   ▒▄▄  
+  ██▒▒▒ ░ ▒░▒░▒░ ░▒▓▒ ▒ ▒    ░ ▒░▓  ░░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░  ▒ ░░    ░▀▀▒  ░▀▀▒  ░▀▀▒ 
+▓██ ░▒░   ░ ▒ ▒░ ░░▒░ ░ ░    ░ ░ ▒  ░  ░ ▒ ▒░ ░ ░▒  ░ ░    ░     ░  ░  ░  ░  ░  ░ 
+▒ ▒ ░░  ░ ░ ░ ▒   ░░░ ░ ░      ░ ░   ░ ░ ░ ▒  ░  ░  ░    ░          ░     ░     ░ 
+░ ░         ░ ░     ░            ░  ░    ░ ░        ░            ░     ░     ░    
+░ ░                                                                               
+ASCII
+              @@prompt.say(lost, color: :red) 
               user.losses += 1
               user.save
               user.reload
@@ -94,7 +109,22 @@ class Game < ActiveRecord::Base
           end   
           
           if character.choices.count == 10
-            @@prompt.say("\n\nYou made it outside of the forest. You're free!\n\n\n", color: :bright_green) 
+            you_won = <<-ASCII
+
+            ▓██   ██▓ ▒█████   █    ██     █     █░ ▒█████   ███▄    █  ▐██▌  ▐██▌  ▐██▌ 
+            ▒██  ██▒▒██▒  ██▒ ██  ▓██▒   ▓█░ █ ░█░▒██▒  ██▒ ██ ▀█   █  ▐██▌  ▐██▌  ▐██▌ 
+             ▒██ ██░▒██░  ██▒▓██  ▒██░   ▒█░ █ ░█ ▒██░  ██▒▓██  ▀█ ██▒ ▐██▌  ▐██▌  ▐██▌ 
+             ░ ▐██▓░▒██   ██░▓▓█  ░██░   ░█░ █ ░█ ▒██   ██░▓██▒  ▐▌██▒ ▓██▒  ▓██▒  ▓██▒ 
+             ░ ██▒▓░░ ████▓▒░▒▒█████▓    ░░██▒██▓ ░ ████▓▒░▒██░   ▓██░ ▒▄▄   ▒▄▄   ▒▄▄  
+              ██▒▒▒ ░ ▒░▒░▒░ ░▒▓▒ ▒ ▒    ░ ▓░▒ ▒  ░ ▒░▒░▒░ ░ ▒░   ▒ ▒  ░▀▀▒  ░▀▀▒  ░▀▀▒ 
+            ▓██ ░▒░   ░ ▒ ▒░ ░░▒░ ░ ░      ▒ ░ ░    ░ ▒ ▒░ ░ ░░   ░ ▒░ ░  ░  ░  ░  ░  ░ 
+            ▒ ▒ ░░  ░ ░ ░ ▒   ░░░ ░ ░      ░   ░  ░ ░ ░ ▒     ░   ░ ░     ░     ░     ░ 
+            ░ ░         ░ ░     ░            ░        ░ ░           ░  ░     ░     ░    
+            ░ ░                                                                         
+            ASCII
+
+            @@prompt.say(you_won, color: :bright_blue) 
+            puts "\n\nYou made it outside of the forest. You're free!\n\n\n"
             user.wins += 1
             user.save
             user.reload

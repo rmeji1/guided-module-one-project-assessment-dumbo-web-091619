@@ -104,9 +104,9 @@ class Result < ActiveRecord::Base
         if hit_or_miss?
             case character.class_type
             when "Warrior"
-                put("You hit the #{monster.name} with a sword for #{character.strength} points.", :bright_green)
+                put("You hit the #{monster.name} with a sword for #{character.strength} points.", :bright_blue)
             when "Mage"
-                put("You hit the #{monster.name} with a fireball for #{character.strength} points.", :bright_green)
+                put("You hit the #{monster.name} with a fireball for #{character.strength} points.", :bright_blue)
             end
             monster.health -= character.strength
             puts "The #{monster.name}'s health is now at #{monster.health}"
@@ -138,7 +138,7 @@ class Result < ActiveRecord::Base
     def betray_or_help
         if hit_or_miss?
             character.current_health += 5
-            put("The stranger gives you a potion that heals you for 5 points! \n\n", :bright_green)
+            put("The stranger gives you a potion that heals you for 5 points! \n\n", :bright_blue)
         else 
             character.current_health -= 5
             put("Oh no! The stranger attacks you and hits you for 5 damage.\n\n", :bright_red) 
@@ -148,7 +148,7 @@ class Result < ActiveRecord::Base
 
     def succeed_or_die
         if hit_or_miss?
-            put("You are able to clear the river!\n\n", :bright_green)
+            put("You are able to clear the river!\n\n", :bright_blue)
         else 
             put("You try to jump over the river, but you fall and hit your head on a rock. You die.\n\n", :bright_red)
             character.current_health = 0
@@ -158,7 +158,7 @@ class Result < ActiveRecord::Base
 
     def help_or_hurt
         if hit_or_miss?
-            put("You check out the cave and find a health potion that heals you for 10 points.\n\n", :bright_green) 
+            put("You check out the cave and find a health potion that heals you for 10 points.\n\n", :bright_blue) 
             character.current_health += 10
         else 
             character.current_health -= 10

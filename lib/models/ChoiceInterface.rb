@@ -34,13 +34,14 @@ class ChoiceInterface
       prompt = "#{art}Oh no! You see a #{name} in front of you. Do you fight or run away?" 
       Menu.new(prompt: prompt , options: FIGHT_CHOICES)
     when FRIEND_OR_FOE
-      Menu.new(prompt:FRIEND_OR_FOE_PROMPT, options: FRIEND_OR_FOE_CHOICES)
+      Menu.new(prompt: STRANGER_IMAGE + "\n\n" + FRIEND_OR_FOE_PROMPT, options: FRIEND_OR_FOE_CHOICES)
     when RIVER
-      Menu.new(prompt:RIVER_PROMPT, options: RIVER_CHOICES)
+      Menu.new(prompt: RIVER_IMAGE + "\n\n" + RIVER_PROMPT, options: RIVER_CHOICES)
     when CAVE
-      Menu.new(prompt:CAVE_PROMPT, options: CAVE_CHOICES)
+      Menu.new(prompt: CAVE_IMAGE + "\n\n" + CAVE_PROMPT, options: CAVE_CHOICES)
     end
   end
+
 
   def get_image_for(name)
     if name == "ogre"
@@ -59,4 +60,6 @@ class ChoiceInterface
 
     return ""
   end
+
+
 end
