@@ -40,6 +40,7 @@ class Game < ActiveRecord::Base
         @@prompt.select("Please select what you like to do") do |menu|
             menu.choice "Start Game", -> {start_game}
             menu.choice "Look at your characters", -> {character_list}
+            #add an option to look at character stats
             menu.choice "Edit your info", -> {user.update_user(self)}
             menu.choice "Delete your profile", -> {user.delete_user}
             menu.choice "Exit", -> { exit }
@@ -64,7 +65,8 @@ class Game < ActiveRecord::Base
           end          
 
           while character.choices.count < 10 do
-            puts "Character health beginning while loop = #{character.reload.health}"
+            #Health is not resetting here after each new game
+            puts "Character health beginning while loop = #{character.reload.health}\n\n"
             choice = Choice.create(character: character)
             choice.show_menu
             result = Result.create(choice: choice)
@@ -76,7 +78,7 @@ class Game < ActiveRecord::Base
           end   
           
           if character.choices.count == 10
-            puts "\n\nYou won the game!!!!\n\n\n"
+            puts "\n\nYou made it outside of the forest. You're free!\n\n\n"
             sleep 4
           end
           

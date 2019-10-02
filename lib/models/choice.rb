@@ -21,6 +21,7 @@ class Choice < ActiveRecord::Base
     def self.select_option
         @@options.sample
         # FRIEND_OR_FOE
+        # CAVE
     end
 
     def show_menu
