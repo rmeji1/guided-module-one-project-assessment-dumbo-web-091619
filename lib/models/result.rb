@@ -23,9 +23,7 @@ class Result < ActiveRecord::Base
         when CAVE
             option_is_cave(choice.choice_made)
         end
-        puts "Health inside end of result #{character.health}"
         character.save
-        # character_health = character.health
         return did_lose?
         sleep 2
     end
@@ -43,14 +41,7 @@ class Result < ActiveRecord::Base
     def option_is_friend_or_foe(choice_made)
         case choice_made
         when FRIEND_TRUST
-            if hit_or_miss?
-                character.health += 5
-                puts "The stranger gives you a potion that heals you for 5 points! \n\n" 
-            else 
-                character.health -= 5
-                puts "Oh no! The stranger attacks you and hits you for 5 damage.\n\n"    
-            end   
-            puts "Your health is now #{character.health}.\n\n"  
+            betray_or_help
         when FRIEND_RUN_AWAY
             puts "You don't trust the stranger. You run away.\n\n"
         end
@@ -62,8 +53,7 @@ class Result < ActiveRecord::Base
         when RIVER_WALK_AROUND
            puts "You are able to walk around the river and keep going.\n\n"
         when RIVER_JUMP_OVER
-            puts "You try to jump over the river, but you fall and hit your head on a rock. You die.\n\n"
-            character.health = 0
+            succeed_or_die
         end
         sleep 2
     end
@@ -71,18 +61,17 @@ class Result < ActiveRecord::Base
     def option_is_cave(choice_made)
         case choice_made
         when CAVE_CHECKOUT
-           puts "You check out the cave and find a health potion that heals you for 10 points.\n\n"
-           character.health += 10
+            help_or_hurt
         when CAVE_KEEP_WALKING
             puts "You decide to keep walking.\n\n"
         end
         sleep 2
     end
 
-    def fight!
-        while monster.health > 0 && character.health > 0
+    def fight!        
+        while monster.health > 0 && character.current_health > 0
             monster_hits
-            character_hits unless character.health < 1
+            character_hits unless character.current_health < 1
         end
 
         if monster.health < 1
@@ -100,9 +89,9 @@ class Result < ActiveRecord::Base
         puts "\n\nThe #{monster.name} tries to attack you."
         sleep 2
         if hit_or_miss?
-            puts "Oh, no the #{monster.name} hits you for #{monster.fight_damage}"
-            character.health -= monster.fight_damage
-            puts "Your health is now at #{character.health}"
+            put("Oh, no the #{monster.name} hits you for #{monster.fight_damage}", :bright_red)
+            character.current_health -= monster.fight_damage
+            puts "Your health is now at #{character.current_health}"
         else
             puts "The #{monster.name} missed!"
         end
@@ -115,9 +104,9 @@ class Result < ActiveRecord::Base
         if hit_or_miss?
             case character.class_type
             when "Warrior"
-                puts "You hit the #{monster.name} with a sword for #{character.strength} points."
+                put("You hit the #{monster.name} with a sword for #{character.strength} points.", :bright_green)
             when "Mage"
-                puts "You hit the #{monster.name} with a fireball for #{character.strength} points."
+                put("You hit the #{monster.name} with a fireball for #{character.strength} points.", :bright_green)
             end
             monster.health -= character.strength
             puts "The #{monster.name}'s health is now at #{monster.health}"
@@ -129,15 +118,52 @@ class Result < ActiveRecord::Base
     end
 
     def run!
-        puts "You tried to run away, but the #{monster.name} hit you for #{monster.run_damage} points"
-        character.health -= monster.run_damage
-        puts "Your health is now at #{character.health}\n\n"
+        put("You tried to run away, but the #{monster.name} hit you for #{monster.run_damage} points", :red)
+        character.current_health -= monster.run_damage
+        puts "Your health is now at #{character.current_health}\n\n"
         sleep 2
     end
 
 
     def did_lose?
-        return true unless character.health > 1 
+        return true unless character.current_health > 1 
         return false
+    end
+
+    def put(message, color)
+        prompt = TTY::Prompt.new
+        prompt.say(message, color: color)
+    end
+ 
+    def betray_or_help
+        if hit_or_miss?
+            character.current_health += 5
+            put("The stranger gives you a potion that heals you for 5 points! \n\n", :bright_green)
+        else 
+            character.current_health -= 5
+            put("Oh no! The stranger attacks you and hits you for 5 damage.\n\n", :bright_red) 
+        end   
+        puts "Your health is now #{character.current_health}.\n\n"  
+    end
+
+    def succeed_or_die
+        if hit_or_miss?
+            put("You are able to clear the river!\n\n", :bright_green)
+        else 
+            put("You try to jump over the river, but you fall and hit your head on a rock. You die.\n\n", :bright_red)
+            character.current_health = 0
+        end   
+        puts "Your health is now #{character.current_health}.\n\n"  
+    end
+
+    def help_or_hurt
+        if hit_or_miss?
+            put("You check out the cave and find a health potion that heals you for 10 points.\n\n", :bright_green) 
+            character.current_health += 10
+        else 
+            character.current_health -= 10
+            put("You walk inside the cave and a giant spider attacks you for 10 damage.\n\n", :bright_red) 
+        end   
+        puts "Your health is now #{character.current_health}.\n\n"  
     end
 end

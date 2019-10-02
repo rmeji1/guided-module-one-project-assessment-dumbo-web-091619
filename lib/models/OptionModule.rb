@@ -19,8 +19,7 @@ module OptionModule
   module FightChoices
     FIGHT_CHOICE = "Fight!"
     RUN = "Run away!"
-    # Would like to be able to say #{monster.name} instead of monster in the line below
-    FIGHT_PROMPT = "Oh no! You see a monster in front of you. Do you fight or run away?"
+    # FIGHT_PROMPT = "Oh no! You see a monster in front of you. Do you fight or run away?"
     FIGHT_CHOICES = [FIGHT_CHOICE, RUN]
   end
 
@@ -44,35 +43,4 @@ module OptionModule
     CAVE_KEEP_WALKING = "Keep walking"
     CAVE_CHOICES = [CAVE_CHECKOUT, CAVE_KEEP_WALKING]
   end
-
-  # ORGE_IMAGE = "X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X
-  # |                           ,,'``````````````',,                            |
-  # X                        ,'`                   `',                          X
-  # |                      ,'                         ',                        |
-  # X                    ,'          ;       ;          ',                      X
-  # |       (           ;             ;     ;             ;     (               |
-  # X        )         ;              ;     ;              ;     )              X
-  # |       (         ;                ;   ;                ;   (               |
-  # X        )    ;   ;    ,,'```',,,   ; ;   ,,,'```',,    ;   ;               X
-  # |       (    ; ',;   '`          `',   ,'`          `'   ;,' ;              |
-  # X        )  ; ;`,`',  _--~~~~--__   ' '   __--~~~~--_  ,'`,'; ;     )       X
-  # |       (    ; `,' ; :  /       \~~-___-~~/       \  : ; ',' ;     (        |
-  # X  )     )   )',  ;   -_\  o    /  '   '  \    o  /_-   ;  ,'       )   (   X
-  # | (     (   (   `;      ~-____--~'       '~--____-~      ;'  )     (     )  |
-  # X  )     )   )   ;            ,`;,,,   ,,,;',            ;  (       )   (   X
-  # | (     (   (  .  ;        ,'`  (__ '_' __)  `',        ;  . )     (     )  |
-  # X  )     \/ ,".). ';    ,'`        ~~ ~~        `',    ;  .(.", \/  )   (   X
-  # | (   , ,'|// / (/ ,;  '        _--~~-~~--_        '  ;, \)    \|', ,    )  |
-  # X ,)  , \/ \|  \\,/  ;;       ,; |_| | |_| ;,       ;;  \,//  |/ \/ ,   ,   X
-  # |",   .| \_ |\/ |#\_/;       ;_| : `~'~' : |_;       ;\_/#| \/| _/ |.   ,"  |
-  # X#(,'  )  \\\#\ \##/)#;     :  `\/       \/   :     ;#(\##/ /#///  (  ',)# ,X
-  # || ) | \ |/ /#/ |#( \; ;     :               ;     ; ;/ )#| \#\ \| / | ( |) |
-  # X\ |.\\ |\_/#| /#),,`   ;     ;./\_     _/\.;     ;   `,,(#\ |#\_/| //.| / ,X
-  # | \\_/# |#\##/,,'`       ;     ~~--|~|~|--~~     ;       `',,\##/#| #\_// \/|
-  # X  ##/#  #,,'`            ;        ~~~~~        ;            `',,#  #\##  //X
-  # |####@,,'`                 `',               ,'`                 `',,@####| |
-  # X#,,'`                        `',         ,'`                        `',,###X
-  # |'  spb                          ~~-----~~                               `' |
-  # X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X
-  # "
 end

@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
 
     def self.create_user
         new_username = @@prompt.ask("What username would you like to have?")
-        User.create(username: new_username)
+        User.create(username: new_username, wins: 0, losses: 0)
     end
 
     def self.find_user
@@ -30,6 +30,12 @@ class User < ActiveRecord::Base
             puts "Welcome back, #{user_found.username}."
         end
         user_found
+    end
+
+    def view_profile
+        puts "Your username is #{self.username}."
+        puts "You have won #{self.wins} times."
+        puts "You have lost #{self.losses} times."
     end
 
     def update_user(game)

@@ -14,6 +14,7 @@ class Choice < ActiveRecord::Base
         if choice.option == FIGHT
             fight = Fight.create(monster: Monster.get_monster_that_hasnt_fought(choice.character))
             choice.update(fight: fight)
+            choice.reload
         end
         return choice
     end
@@ -25,7 +26,7 @@ class Choice < ActiveRecord::Base
     end
 
     def show_menu
-        prompt = ChoiceInterface.new()
+        prompt = ChoiceInterface.new(self)
         prompt_return = prompt.show(option)
         self.update(choice_made: prompt_return)
     end

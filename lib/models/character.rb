@@ -10,7 +10,7 @@ class Character < ActiveRecord::Base
 
     def self.create_character(user)
         new_name = @@prompt.ask("What would you like to name your character?")
-        new_character = Character.create(name: new_name, alive:true, user: user)
+        new_character = Character.create(name: new_name, user: user)
         new_class = @@prompt.select("What would you like your class to be?", %w(Warrior Mage))
         new_character.update(class_type: new_class)
         add_health_and_strength(new_character, new_class)
@@ -22,7 +22,7 @@ class Character < ActiveRecord::Base
         if new_class == "Warrior"
             puts "Roll for health"
             new_health = rand(40..60)
-            new_character.update(health: new_health)
+            new_character.update(max_health: new_health)
             sleep 1
             puts "Your health is #{new_health}"
             puts "Roll for strength"
@@ -33,7 +33,7 @@ class Character < ActiveRecord::Base
         else
             puts "Roll for health"
             new_health = rand(20..40)
-            new_character.update(health: new_health)
+            new_character.update(max_health: new_health)
             sleep 1
             puts "Your health is #{new_health}"
             puts "Roll for strength"
@@ -66,9 +66,8 @@ class Character < ActiveRecord::Base
     def self.read_stats(found_character)
         puts "Here are your stats:"
         puts "Your name is #{found_character.name}"
-        puts "Your health is #{found_character.health}"
+        puts "Your health is #{found_character.max_health}"
         puts "Your strength is #{found_character.strength}"
-        puts "You are #{found_character.alive ? 'alive' : 'dead'}"
     end
 
     # def update_character

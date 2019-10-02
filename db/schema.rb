@@ -15,10 +15,10 @@ ActiveRecord::Schema.define(version: 2019_10_01_004623) do
   create_table "characters", force: :cascade do |t|
     t.string "name"
     t.integer "user_id"
-    t.integer "health"
+    t.integer "max_health"
     t.string "class_type"
     t.integer "strength"
-    t.boolean "alive"
+    t.integer "current_health"
   end
 
   create_table "choices", force: :cascade do |t|
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2019_10_01_004623) do
     t.integer "health"
     t.integer "fight_damage"
     t.integer "run_damage"
+    t.string "art"
   end
 
   create_table "results", force: :cascade do |t|

@@ -5,19 +5,19 @@ Result.destroy_all
 Choice.destroy_all
 Fight.destroy_all
 
-user1 = User.create(username:"User1")
-user2 = User.create(username:"User2")
-user3 = User.create(username:"User3")
-user4 = User.create(username:"User4")
-user5 = User.create(username:"User5")
-user6 = User.create(username:"User6")
+user1 = User.create(username:"User1", wins: 0, losses: 0)
+user2 = User.create(username:"User2", wins: 0, losses: 0)
+user3 = User.create(username:"User3", wins: 0, losses: 0)
+user4 = User.create(username:"User4", wins: 0, losses: 0)
+user5 = User.create(username:"User5", wins: 0, losses: 0)
+user6 = User.create(username:"User6", wins: 0, losses: 0)
 
-character1 = Character.create(name:"Character1",user:user1,health:100, class_type: "Mage", strength: 5, alive: true)
-character2 = Character.create(name:"Character2",user:user2,health:15, class_type: "Warrior", strength: 7, alive: true)
-character3 = Character.create(name:"Character3",user:user3,health:30, class_type: "Mage", strength: 10, alive: true)
-character4 = Character.create(name:"Character4",user:user4,health:45, class_type: "Warrior", strength: 8, alive: true)
-character5 = Character.create(name:"Character5",user:user5,health:60, class_type: "Mage", strength: 3, alive: true)
-character6 = Character.create(name:"Character6",user:user6,health:10, class_type: "Warrior", strength: 4, alive: true)
+character1 = Character.create(name:"Character1",user:user1,max_health:100, class_type: "Mage", strength: 5, current_health: 100)
+character2 = Character.create(name:"Character2",user:user2,max_health:15, class_type: "Warrior", strength: 7, current_health: 15)
+character3 = Character.create(name:"Character3",user:user3,max_health:30, class_type: "Mage", strength: 10, current_health: 30)
+character4 = Character.create(name:"Character4",user:user4,max_health:45, class_type: "Warrior", strength: 8, current_health: 45)
+character5 = Character.create(name:"Character5",user:user5,max_health:60, class_type: "Mage", strength: 3, current_health: 60)
+character6 = Character.create(name:"Character6",user:user6,max_health:10, class_type: "Warrior", strength: 4, current_health: 10)
 
 Monster.create(name: "ogre", health:20, fight_damage: 15, run_damage:20)
 Monster.create(name: "dragon", health:30, fight_damage: 25, run_damage:20)

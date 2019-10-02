@@ -27,12 +27,12 @@ class GameRunner
     def run
         welcome
         user = played_before
-        sleep 5
+        sleep 3
         system "clear"
     
         spinner = TTY::Spinner.new("Loading main menu ... [:spinner]", format: :arrow_pulse)
         spinner.auto_spin # Automatic animation with default interval
-        sleep 5
+        sleep 3
         spinner.stop('Done!')
         game = Game.create(user:user)
         # game.menu
@@ -45,10 +45,8 @@ end
 
 GameRunner.new.run
 
-# get characterthey want to start game 
-# 
-# if "view_ca"
-# binding.pry
 
 
-puts "Run Goodbye"
+# puts dragon_image
+
+# puts "Run Goodbye"
