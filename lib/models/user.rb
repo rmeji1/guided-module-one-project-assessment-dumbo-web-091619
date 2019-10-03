@@ -10,11 +10,18 @@ class User < ActiveRecord::Base
 
     def self.create_user
         new_username = @@prompt.ask("What username would you like to have?")
+        while new_username == "" || new_username == nil || User.find_by(username: new_username)
+            new_username = @@prompt.ask("Sorry-- Invalid username or name already taken. What username would you like to have?")
+
+        end
         User.create(username: new_username, wins: 0, losses: 0)
     end
 
     def self.find_user
         returning_username = @@prompt.ask("What is your username?")
+        while returning_username == "" || returning_username == nil
+            returning_username = @@prompt.ask("Sorry-- Invalid username. What is your username?")
+        end
         user_found = self.find_by(username: returning_username)
         if user_found == nil
            new_user = @@prompt.yes?("I'm sorry, we can't find your username. Would you like to create a new username?")
