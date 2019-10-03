@@ -68,21 +68,22 @@ class Character < ActiveRecord::Base
     def self.read_stats(found_character)
         puts "Here are your stats:"
         puts "Your name is #{found_character.name}"
+        puts "Your class is #{found_character.class_type}"
         puts "Your health is #{found_character.max_health}"
         puts "Your strength is #{found_character.strength}"
     end
 
-    # def update_character
-    #     change_name = @@prompt.ask("What would you like your new character name to be?")
-    #     self.name = change_name
-    #     puts "Your character name is now #{change_name}"
-    # end
+    def self.update_character(found_character)
+        change_name = @@prompt.ask("What would you like your new character name to be?")
+        found_character.update(name: change_name) 
+        puts "Your character name is now #{change_name}"
+    end
 
-    # def delete_character
-    #     delete = @@prompt.yes?("Are you sure you want to delete your character?")
-    #     if delete == true
-    #         self.delete
-    #     end
-    # end
+    def self.delete_character(found_character)
+        delete = @@prompt.yes?("Are you sure you want to delete your character?")
+        if delete == true
+            found_character.delete
+        end
+    end
 
 end

@@ -15,6 +15,7 @@ class Result < ActiveRecord::Base
             option_is_fight(choice.choice_made)
             if did_win? 
                 puts "Yay! You defeated the #{monster.name}! Onto the next adventure.\n\n"
+                sleep 2
             end
         when FRIEND_OR_FOE
             option_is_friend_or_foe(choice.choice_made)
@@ -25,7 +26,7 @@ class Result < ActiveRecord::Base
         end
         character.save
         return did_lose?
-        sleep 2
+        sleep 5
     end
     
     def option_is_fight(choice_made)
@@ -91,7 +92,9 @@ class Result < ActiveRecord::Base
         if hit_or_miss?
             put("Oh, no the #{monster.name} hits you for #{monster.fight_damage}", :bright_red)
             character.current_health -= monster.fight_damage
-            puts "Your health is now at #{character.current_health}"
+            if character.current_health > 0
+                puts "Your health is now at #{character.current_health}"
+            end
         else
             puts "The #{monster.name} missed!"
         end
@@ -104,8 +107,10 @@ class Result < ActiveRecord::Base
         if hit_or_miss?
             case character.class_type
             when "Warrior"
+                GameRunner.play("sword.mov")
                 put("You hit the #{monster.name} with a sword for #{character.strength} points.", :bright_blue)
             when "Mage"
+                GameRunner.play("fireball.mov")
                 put("You hit the #{monster.name} with a fireball for #{character.strength} points.", :bright_blue)
             end
             monster.health -= character.strength
@@ -126,7 +131,7 @@ class Result < ActiveRecord::Base
 
 
     def did_lose?
-        return true unless character.current_health > 1 
+        return true unless character.current_health > 0 
         return false
     end
 

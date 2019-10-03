@@ -12,6 +12,13 @@ class ChoiceInterface
   
   def show(option)
     menu = menu_options
+    if option == "cave"
+      GameRunner.play("cave.mov") 
+    elsif option == RIVER
+      GameRunner.play("river.mov") 
+    elsif option == FRIEND_OR_FOE
+      GameRunner.play("stranger.mov")
+    end
     prompt.select(menu_options[option].prompt, menu_options[option].options)
   end
 
@@ -23,8 +30,7 @@ class ChoiceInterface
   end
 
   def get_menu_for(option)
-    case option
-    when FIGHT
+    if option == FIGHT
       name = "monster"
       art = ""
       if @choice.monster != nil 
@@ -33,21 +39,20 @@ class ChoiceInterface
       end
       prompt = "#{art}Oh no! You see a #{name} in front of you. Do you fight or run away?" 
       Menu.new(prompt: prompt , options: FIGHT_CHOICES)
-    when FRIEND_OR_FOE
+    elsif option == FRIEND_OR_FOE
       Menu.new(prompt: STRANGER_IMAGE + "\n\n" + FRIEND_OR_FOE_PROMPT, options: FRIEND_OR_FOE_CHOICES)
-    when RIVER
+    elsif option == RIVER
       Menu.new(prompt: RIVER_IMAGE + "\n\n" + RIVER_PROMPT, options: RIVER_CHOICES)
-    when CAVE
+    elsif option == "cave"
       Menu.new(prompt: CAVE_IMAGE + "\n\n" + CAVE_PROMPT, options: CAVE_CHOICES)
     end
   end
 
 
   def get_image_for(name)
-    someVar = ""
     if name == "ogre"
       GameRunner.play("ogre.m4a")
-      someVar =  OGRE_IMAGE
+      return OGRE_IMAGE
     elsif name == "ghoul"
       GameRunner.play("ghoul.mov")
       return GHOUL_IMAGE

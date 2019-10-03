@@ -8,33 +8,66 @@ class Game < ActiveRecord::Base
     
     @@prompt = TTY::Prompt.new
 
-    def character_list
-        user.reload
-        list = true
-        if list == true
-            user_characters = user.characters.map do |character|
-                {character.name => character.id}
-            end 
-            user_characters << {"Go Back!" => -1}
-            user_input = @@prompt.select("Select a character to view stats, or go back to the main menu", user_characters)
-            
-            if user_input == -1 
-                self.menu
-            else
-                Character.read_stats(Character.find(user_input))
-                prompt_to_go_to_main_menu
-            end
-            binding.pry 
-        else
-            puts "Exit"
-        end
-        self.menu
-    end
-
     def prompt_to_go_to_main_menu
         @@prompt.select("", ["Go back to main menu"])
         self.menu
     end
+
+    def go_back_to_character_list
+        @@prompt.select("", ["Go back to main menu"])
+        character_list
+    end
+
+    def read_stats(character)
+        Character.read_stats(character)
+        go_back_to_character_list
+    end
+
+    def update_character(character)
+        Character.update_character(character)
+        go_back_to_character_list
+    end
+
+    def delete_character(character)
+        Character.delete_character(character)
+      go_back_to_character_list
+    end
+
+ 
+
+    def character_list
+        user.reload
+        system "clear"
+        user_characters = user.characters.map do |character|
+            {character.name => character.id}
+        end 
+        if user_characters.empty?
+            yes = @@prompt.yes?("You don't have any characters. Would you like to create a new character?")
+            if yes == true
+                Character.create_character(user)
+            else
+                self.menu
+            end
+        else
+            user_characters << {"Go Back!" => -1}
+            user_input = @@prompt.select("Select a character to view stats, edit or delete your character, or go back to the main menu", user_characters)
+            if user_input == -1 
+                self.menu
+            else
+                character = (Character.find(user_input))
+                @@prompt.select("Would you like to view stats, edit, or delete your character?") do |menu|
+                menu.choice "Read stats", -> {read_stats(character)}
+                menu.choice "Edit your character", -> {update_character(character)}
+                menu.choice "Delete your character", -> {delete_character(character)}
+                menu.choice "Go back to main menu", -> {prompt_to_go_to_main_menu}
+                end
+            end
+        end
+            # binding.pry 
+        self.menu
+    end
+
+
 
     def pick_character
         user.reload
@@ -87,6 +120,7 @@ class Game < ActiveRecord::Base
             choice.show_menu
             result = Result.create(choice: choice)
             if result.outcome
+                system "clear"
             lost = <<-ASCII
 
 ▓██   ██▓ ▒█████   █    ██     ██▓     ▒█████    ██████ ▄▄▄█████▓ ▐██▌  ▐██▌  ▐██▌ 
@@ -101,15 +135,18 @@ class Game < ActiveRecord::Base
 ░ ░                                                                               
 ASCII
               @@prompt.say(lost, color: :red) 
+              GameRunner.play("losing.mov")
+              sleep 5
               user.losses += 1
               user.save
               user.reload
-              sleep 3
+            #   sleep 3
               break
             end
           end   
           
           if character.choices.count == 10
+            system "clear"
             you_won = <<-ASCII
 
             ▓██   ██▓ ▒█████   █    ██     █     █░ ▒█████   ███▄    █  ▐██▌  ▐██▌  ▐██▌ 
@@ -126,10 +163,12 @@ ASCII
 
             @@prompt.say(you_won, color: :bright_blue) 
             puts "\n\nYou made it outside of the forest. You're free!\n\n\n"
+            GameRunner.play("winning.mov")
+            sleep 5
             user.wins += 1
             user.save
             user.reload
-            sleep 4
+            # sleep 4
           end
           
           character.choices.delete_all
