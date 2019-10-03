@@ -45,24 +45,26 @@ class ChoiceInterface
 
   def get_image_for(name)
     if name == "ogre"
+      GameRunner.play_ogre_noise
       return OGRE_IMAGE
     elsif name == "ghoul"
+      GameRunner.play_ghoul_noise
       return GHOUL_IMAGE
     elsif name == "dragon"
       GameRunner.play_dragon_noise
-      sleep 0.15
+      # sleep 0.15
       return DRAGON_IMAGE
     elsif name == "wolf"
       GameRunner.play_wolf_noise
-      sleep 0.25
+      # sleep 0.25
       return WOLF_IMAGE
     elsif name == "demon"
       GameRunner.play_demon_noise
-      sleep 0.25
+      # sleep 0.25
       return DEMON_IMAGE
     elsif name == "bear"
       GameRunner.play_bear_noise
-      sleep 0.15
+      # sleep 0.15
       return BEAR_IMAGE
     end
 

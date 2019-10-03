@@ -5,6 +5,8 @@ class Character < ActiveRecord::Base
     has_many :fights, through: :choices
     has_many :monsters, through: :fights
 
+    attr_accessor :previous_choice_option
+
     @@prompt = TTY::Prompt.new
 
 

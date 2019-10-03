@@ -46,14 +46,14 @@ class GameRunner
         welcome
         user = played_before
         sleep 3
-        self.class.kill_forest_sound
         system "clear"
         spinner = TTY::Spinner.new("Loading main menu ... [:spinner]", format: :arrow_pulse)
         spinner.auto_spin # Automatic animation with default interval
         sleep 3
         spinner.stop('Done!')
         game = Game.create(user:user)
-        game.menu
+        self.class.kill_forest_sound
+        game.menu    
     end
 
     def self.play_forest_sound 
@@ -63,13 +63,12 @@ class GameRunner
     end
 
     def self.kill_forest_sound
-        Process.kill("SIGHUP", @@sounds["forest"])
+        fork { exec "killall afplay" }
+        # Process.kill("SIGHUP", @@sounds["forest"])
     end
 
     def self.kill_all_sounds
-        @@sounds.each_pair do |key, sound_pid|
-            Process.kill('SIGHUP', sound_pid)
-        end
+        fork { exec "killall afplay" }
     end
 
     def self.exit
@@ -79,7 +78,6 @@ class GameRunner
 
     def self.play_demon_noise
         pid = fork { `afplay music/demon.mov` }
-        # @@sounds["demon"] = forest_pid
         Process.detach(pid)
     end
 
@@ -95,7 +93,17 @@ class GameRunner
     
     def self.play_dragon_noise
         pid = fork { `afplay music/dragon.mov` }
-        # Process.detach(pid)
+        Process.detach(pid)
+    end
+
+    def self.play_ghoul_noise
+        pid = fork { `afplay music/ghoul.mov` }
+        Process.detach(pid)
+    end
+
+    def self.play_ogre_noise
+        pid = fork { `afplay music/ogre.m4a` }
+        Process.detach(pid)
     end
 end
 

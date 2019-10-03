@@ -11,12 +11,20 @@ class Choice < ActiveRecord::Base
     def self.create(args)
         system "clear"
         choice = super
-        choice.update(option: self.select_option)
+        temp_option = self.select_option
+        # binding.pry
+
+        while temp_option == choice.character.previous_choice_option
+            temp_option = self.select_option
+        end
+        choice.update(option: temp_option)
+        choice.character.previous_choice_option = temp_option
         if choice.option == FIGHT
             fight = Fight.create(monster: Monster.get_monster_that_hasnt_fought(choice.character))
             choice.update(fight: fight)
             choice.reload
         end
+
         return choice
     end
 
