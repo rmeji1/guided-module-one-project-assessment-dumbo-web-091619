@@ -73,6 +73,7 @@ class Game < ActiveRecord::Base
     def begin_game_for_character(character)
         # system "clear"
         character.update(current_health: character.max_health)
+        character.previous_choice_option = "fight"
         puts FOREST_IMAGE
         start = @@prompt.select("You're standing in the middle of a dense forest. There are four paths: one going north, one going east, one going south, and one going west. Which path do you take?") do |prompt|
             prompt.choice NORTH
