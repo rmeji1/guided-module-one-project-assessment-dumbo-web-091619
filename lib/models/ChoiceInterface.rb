@@ -49,12 +49,20 @@ class ChoiceInterface
     elsif name == "ghoul"
       return GHOUL_IMAGE
     elsif name == "dragon"
+      GameRunner.play_dragon_noise
+      sleep 0.15
       return DRAGON_IMAGE
     elsif name == "wolf"
+      GameRunner.play_wolf_noise
+      sleep 0.25
       return WOLF_IMAGE
     elsif name == "demon"
+      GameRunner.play_demon_noise
+      sleep 0.25
       return DEMON_IMAGE
     elsif name == "bear"
+      GameRunner.play_bear_noise
+      sleep 0.15
       return BEAR_IMAGE
     end
 
