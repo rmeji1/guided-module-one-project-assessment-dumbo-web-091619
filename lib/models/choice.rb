@@ -9,6 +9,7 @@ class Choice < ActiveRecord::Base
     @@options = OPTIONS
 
     def self.create(args)
+        system "clear"
         choice = super
         choice.update(option: self.select_option)
         if choice.option == FIGHT
