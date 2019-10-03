@@ -24,6 +24,7 @@ class Choice < ActiveRecord::Base
         @@options.sample
         # FRIEND_OR_FOE
         # CAVE
+        # FIGHT
     end
 
     def show_menu

@@ -11,7 +11,7 @@ module OptionModule
     
     RIVER = "river"
     CAVE = "cave"
-    OPTIONS = [FIGHT, FRIEND_OR_FOE, RIVER, CAVE, FIGHT] 
+    OPTIONS = [FRIEND_OR_FOE, RIVER, CAVE, FIGHT, FIGHT, FIGHT, FIGHT, FIGHT, FIGHT] 
 
     # private_constant :FIGHT, :GO_AGAIN
   end
