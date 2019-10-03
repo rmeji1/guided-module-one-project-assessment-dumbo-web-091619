@@ -63,7 +63,7 @@ class GameRunner
     end
 
     def self.kill_forest_sound
-        Process.kill("KILL", @@sounds["forest"])
+        Process.kill("SIGHUP", @@sounds["forest"])
     end
 
     def self.kill_all_sounds
