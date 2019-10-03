@@ -82,7 +82,7 @@ class Game < ActiveRecord::Base
             prompt.choice WEST
           end          
 
-          while character.choices.count < 10 do
+          while character.choices.count < 10 && character.current_health > 1 do
             choice = Choice.create(character: character)
             choice.show_menu
             result = Result.create(choice: choice)
