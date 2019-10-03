@@ -76,33 +76,8 @@ class GameRunner
         exit
     end
 
-    def self.play_demon_noise
-        pid = fork { `afplay music/demon.mov` }
-        Process.detach(pid)
-    end
-
-    def self.play_wolf_noise
-        pid = fork { `afplay music/wolf.mp3` }
-        Process.detach(pid)
-    end
-
-    def self.play_bear_noise
-        pid = fork { `afplay music/bear.mov` }
-        Process.detach(pid)
-    end
-    
-    def self.play_dragon_noise
-        pid = fork { `afplay music/dragon.mov` }
-        Process.detach(pid)
-    end
-
-    def self.play_ghoul_noise
-        pid = fork { `afplay music/ghoul.mov` }
-        Process.detach(pid)
-    end
-
-    def self.play_ogre_noise
-        pid = fork { `afplay music/ogre.m4a` }
+    def self.play(title) 
+        pid = fork { `afplay music/#{title}` }
         Process.detach(pid)
     end
 end
