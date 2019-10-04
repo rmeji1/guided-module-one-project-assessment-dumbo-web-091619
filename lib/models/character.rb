@@ -23,7 +23,7 @@ class Character < ActiveRecord::Base
     def self.add_health_and_strength(new_character, new_class)
         if new_class == "Warrior"
             puts "Roll for health"
-            new_health = rand(70..90)
+            new_health = rand(50..70)
             new_character.update(max_health: new_health)
             sleep 1
             puts "Your health is #{new_health}"
@@ -34,7 +34,7 @@ class Character < ActiveRecord::Base
             puts "Your strength is #{new_strength}"
         else
             puts "Roll for health"
-            new_health = rand(50..70)
+            new_health = rand(40..60)
             new_character.update(max_health: new_health)
             sleep 1
             puts "Your health is #{new_health}"

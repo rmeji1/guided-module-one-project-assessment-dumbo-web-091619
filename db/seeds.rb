@@ -19,10 +19,10 @@ character4 = Character.create(name:"Character4",user:user4,max_health:45, class_
 character5 = Character.create(name:"Character5",user:user5,max_health:60, class_type: "Mage", strength: 3, current_health: 60)
 character6 = Character.create(name:"Character6",user:user6,max_health:10, class_type: "Warrior", strength: 4, current_health: 10)
 
-Monster.create(name: "ogre", health:20, fight_damage: 10, run_damage:5)
-Monster.create(name: "dragon", health:20, fight_damage: 10, run_damage:5)
-Monster.create(name: "wolf", health:15, fight_damage: 5, run_damage:3)
-Monster.create(name: "ghoul", health:15, fight_damage: 8, run_damage:4)
+Monster.create(name: "ogre", health:25, fight_damage: 13, run_damage:8)
+Monster.create(name: "dragon", health:25, fight_damage: 13, run_damage:8)
+Monster.create(name: "wolf", health:15, fight_damage: 8, run_damage:3)
+Monster.create(name: "ghoul", health:15, fight_damage: 8, run_damage:3)
 Monster.create(name: "demon", health:20, fight_damage: 10, run_damage:5)
 Monster.create(name: "bear", health:15, fight_damage: 8, run_damage:3)
 
