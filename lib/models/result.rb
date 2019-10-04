@@ -52,6 +52,23 @@ class Result < ActiveRecord::Base
         sleep 2
     end
 
+    def get_sound_for(name)
+        if name == "ogre"
+          GameRunner.play("ogre.m4a")
+        elsif name == "ghoul"
+          GameRunner.play("ghoul.mov")
+        elsif name == "dragon"
+          GameRunner.play("dragon.mov")
+        elsif name == "wolf"
+          GameRunner.play("wolf.mp3")
+        elsif name == "demon"
+          GameRunner.play("demon.mov")
+        elsif name == "bear"
+          GameRunner.play("bear.mov")
+        end
+        # return ""
+      end
+
     def fight!        
         while monster.health > 0 && character.current_health > 0
             monster_hits
@@ -73,7 +90,8 @@ class Result < ActiveRecord::Base
     end
 
     def monster_gets_to_hit_character
-        put("Oh, no the #{monster.name} hits you for #{monster.fight_damage}", :bright_red)
+        get_sound_for(monster.name)
+        put("Oh no, the #{monster.name} hits you for #{monster.fight_damage}", :bright_red)
         character.current_health -= monster.fight_damage
         if character.current_health > 0
             puts "Your health is now at #{character.current_health}"
