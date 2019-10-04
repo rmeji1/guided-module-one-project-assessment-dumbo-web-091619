@@ -90,7 +90,7 @@ class Result < ActiveRecord::Base
     def character_gets_to_hit_monster
         character.class_type == "Warrior" ? warrior_hits : mage_hits
         monster.health -= character.strength
-        puts "The #{monster.name}'s health is now at #{monster.health}"
+        puts "The #{monster.name}'s health is now at #{monster.health}" unless monster.health < 1
     end
 
     def warrior_hits
