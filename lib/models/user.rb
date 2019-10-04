@@ -7,7 +7,6 @@ class User < ActiveRecord::Base
     
     @@prompt = TTY::Prompt.new
     
-
     def self.create_user
         new_username = @@prompt.ask("What username would you like to have?")
         while new_username == "" || new_username == nil || User.find_by(username: new_username)
@@ -18,25 +17,37 @@ class User < ActiveRecord::Base
     end
 
     def self.find_user
+        user_found = self.find_by(username: self.get_returning_player_username)
+        if user_found == nil
+            user_found = self.user_not_found
+        else
+            puts "Welcome back, #{user_found.username}."
+        end
+        return user_found
+    end
+
+    def self.get_returning_player_username
         returning_username = @@prompt.ask("What is your username?")
         while returning_username == "" || returning_username == nil
             returning_username = @@prompt.ask("Sorry-- Invalid username. What is your username?")
         end
-        user_found = self.find_by(username: returning_username)
-        if user_found == nil
-           new_user = @@prompt.yes?("I'm sorry, we can't find your username. Would you like to create a new username?")
-           if new_user == true
-            new_user = self.create_user
-            Character.create_character(new_user)
-            user_found = new_user
-           else
-            puts "See you later"
-            exit
-           end
-        else
-            puts "Welcome back, #{user_found.username}."
+        return returning_username
+    end
+
+    def self.user_not_found
+        create_account = @@prompt.yes?("I'm sorry, we can't find your username. Would you like to create a new username?")
+        if create_account
+             return self.create_new_user_with_character
+         else
+             puts "See you later"
+             GameRunner.exit
         end
-        user_found
+    end
+
+    def self.create_new_user_with_character
+        new_user = self.create_user
+        Character.create_character(new_user)
+        new_user
     end
 
     def view_profile

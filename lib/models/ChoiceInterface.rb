@@ -12,13 +12,7 @@ class ChoiceInterface
   
   def show(option)
     menu = menu_options
-    if option == "cave"
-      GameRunner.play("cave.mov") 
-    elsif option == RIVER
-      GameRunner.play("river.mov") 
-    elsif option == FRIEND_OR_FOE
-      GameRunner.play("stranger.mov")
-    end
+    play_environment_sound_for(option)
     prompt.select(menu_options[option].prompt, menu_options[option].options)
   end
 
@@ -29,16 +23,19 @@ class ChoiceInterface
     end
   end
 
+  def play_environment_sound_for(option)
+    if option == "cave"
+      GameRunner.play("cave.mov") 
+    elsif option == RIVER
+      GameRunner.play("river.mov") 
+    elsif option == FRIEND_OR_FOE
+      GameRunner.play("stranger.mov")
+    end
+  end
+  
   def get_menu_for(option)
     if option == FIGHT
-      name = "monster"
-      art = ""
-      if @choice.monster != nil 
-        name = @choice.monster.name
-        art = get_image_for(name) + "\n\n"
-      end
-      prompt = "#{art}Oh no! You see a #{name} in front of you. Do you fight or run away?" 
-      Menu.new(prompt: prompt , options: FIGHT_CHOICES)
+      get_monster_menu()
     elsif option == FRIEND_OR_FOE
       Menu.new(prompt: STRANGER_IMAGE + "\n\n" + FRIEND_OR_FOE_PROMPT, options: FRIEND_OR_FOE_CHOICES)
     elsif option == RIVER
@@ -48,6 +45,16 @@ class ChoiceInterface
     end
   end
 
+  def get_monster_menu
+    name = "monster"
+    art = ""
+    if @choice.monster != nil 
+      name = @choice.monster.name
+      art = get_image_for(name) + "\n\n"
+    end
+    prompt = "#{art}Oh no! You see a #{name} in front of you. Do you fight or run away?" 
+    Menu.new(prompt: prompt , options: FIGHT_CHOICES)
+  end
 
   def get_image_for(name)
     if name == "ogre"
@@ -58,24 +65,18 @@ class ChoiceInterface
       return GHOUL_IMAGE
     elsif name == "dragon"
       GameRunner.play("dragon.mov")
-      # sleep 0.15
       return DRAGON_IMAGE
     elsif name == "wolf"
       GameRunner.play("wolf.mp3")
-      # sleep 0.25
       return WOLF_IMAGE
     elsif name == "demon"
       GameRunner.play("demon.mov")
-      # sleep 0.25
       return DEMON_IMAGE
     elsif name == "bear"
       GameRunner.play("bear.mov")
-      # sleep 0.15
       return BEAR_IMAGE
     end
 
     return ""
   end
-
-
 end

@@ -13,10 +13,6 @@ class Result < ActiveRecord::Base
         case choice.option
         when FIGHT
             option_is_fight(choice.choice_made)
-            if did_win? 
-                puts "Yay! You defeated the #{monster.name}! Onto the next adventure.\n\n"
-                sleep 2
-            end
         when FRIEND_OR_FOE
             option_is_friend_or_foe(choice.choice_made)
         when RIVER 
@@ -30,42 +26,29 @@ class Result < ActiveRecord::Base
     end
     
     def option_is_fight(choice_made)
-        case choice_made
-        when FIGHT_CHOICE
-            self.fight!
-        when RUN
-            self.run!
-        end
+        choice_made == FIGHT_CHOICE ? self.fight! : self.run!
         sleep 2
+        if did_win? 
+            puts "Yay! You defeated the #{monster.name}! Onto the next adventure.\n\n"
+            sleep 2
+        end
     end
     
     def option_is_friend_or_foe(choice_made)
-        case choice_made
-        when FRIEND_TRUST
-            betray_or_help
-        when FRIEND_RUN_AWAY
-            puts "You don't trust the stranger. You run away.\n\n"
-        end
+        message = "You don't trust the stranger. You run away.\n\n"
+        choice_made == FRIEND_TRUST ? betray_or_help() : (puts message)
         sleep 2
     end
 
     def option_is_river(choice_made)
-        case choice_made
-        when RIVER_WALK_AROUND
-           puts "You are able to walk around the river and keep going.\n\n"
-        when RIVER_JUMP_OVER
-            succeed_or_die
-        end
+        message = "You are able to walk around the river and keep going.\n\n"
+        choice_made == RIVER_WALK_AROUND ? (puts message) : succeed_or_die
         sleep 2
     end
 
     def option_is_cave(choice_made)
-        case choice_made
-        when CAVE_CHECKOUT
-            help_or_hurt
-        when CAVE_KEEP_WALKING
-            puts "You decide to keep walking.\n\n"
-        end
+        message = "You decide to keep walking.\n\n"
+        choice_made == CAVE_CHECKOUT ? help_or_hurt : (puts message)
         sleep 2
     end
 
@@ -74,11 +57,7 @@ class Result < ActiveRecord::Base
             monster_hits
             character_hits unless character.current_health < 1
         end
-
-        if monster.health < 1
-            self.update(did_win?: true)
-        end
-       
+        self.update(did_win?: true) unless monster.health > 1
         sleep 2
     end
     
@@ -89,37 +68,39 @@ class Result < ActiveRecord::Base
     def monster_hits
         puts "\n\nThe #{monster.name} tries to attack you."
         sleep 2
-        if hit_or_miss?
-            put("Oh, no the #{monster.name} hits you for #{monster.fight_damage}", :bright_red)
-            character.current_health -= monster.fight_damage
-            if character.current_health > 0
-                puts "Your health is now at #{character.current_health}"
-            end
-        else
-            puts "The #{monster.name} missed!"
-        end
+        hit_or_miss? ? monster_gets_to_hit_character : (puts "The #{monster.name} missed!")
         sleep 1
+    end
+
+    def monster_gets_to_hit_character
+        put("Oh, no the #{monster.name} hits you for #{monster.fight_damage}", :bright_red)
+        character.current_health -= monster.fight_damage
+        if character.current_health > 0
+            puts "Your health is now at #{character.current_health}"
+        end
     end
 
     def character_hits
         puts "\n\nYou try to attack the #{monster.name}." 
         sleep 2
-        if hit_or_miss?
-            case character.class_type
-            when "Warrior"
-                GameRunner.play("sword.mov")
-                put("You hit the #{monster.name} with a sword for #{character.strength} points.", :bright_blue)
-            when "Mage"
-                GameRunner.play("fireball.mov")
-                put("You hit the #{monster.name} with a fireball for #{character.strength} points.", :bright_blue)
-            end
-            monster.health -= character.strength
-            puts "The #{monster.name}'s health is now at #{monster.health}"
-        else
-            puts "You missed!"
-        end
-
+        hit_or_miss? ? character_gets_to_hit_monster : (puts "You missed!")
         sleep 1
+    end
+
+    def character_gets_to_hit_monster
+        character.class_type == "Warrior" ? warrior_hits : mage_hits
+        monster.health -= character.strength
+        puts "The #{monster.name}'s health is now at #{monster.health}"
+    end
+
+    def warrior_hits
+        GameRunner.play("sword.mov")
+        put("You hit the #{monster.name} with a sword for #{character.strength} points.", :bright_blue)
+    end
+
+    def mage_hits
+        GameRunner.play("fireball.mov")
+        put("You hit the #{monster.name} with a fireball for #{character.strength} points.", :bright_blue)
     end
 
     def run!
@@ -128,7 +109,6 @@ class Result < ActiveRecord::Base
         puts "Your health is now at #{character.current_health}\n\n"
         sleep 2
     end
-
 
     def did_lose?
         return true unless character.current_health > 0 

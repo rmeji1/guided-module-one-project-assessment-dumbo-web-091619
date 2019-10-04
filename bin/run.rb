@@ -1,78 +1,57 @@
 require_relative '../config/environment'
+require_relative '../lib/models/ArtModule'
 require 'tty-prompt'
 require 'tty-spinner'
 
 
 class GameRunner 
-
-    @@sounds = {}
+    include ArtModule
 
     def initialize
         @prompt = TTY::Prompt.new
+    end  
+        
+    def run
+        welcome
+        user = played_before
+        self.loading_screen
+        self.class.kill_all_sounds
+        Game.create(user:user).menu
     end
-    
-    def welcome
-        self.class.play_forest_sound
-        sleep 0.5
-        puts "WELCOME TO"
-        puts <<-ASCII
 
-  █████▒▒█████   ██▀███  ▓█████   ██████ ▄▄▄█████▓     █████▒██▓  ▄████  ██░ ██ ▄▄▄█████▓▓█████  ██▀███  
-  ▓██   ▒▒██▒  ██▒▓██ ▒ ██▒▓█   ▀ ▒██    ▒ ▓  ██▒ ▓▒   ▓██   ▒▓██▒ ██▒ ▀█▒▓██░ ██▒▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒
-  ▒████ ░▒██░  ██▒▓██ ░▄█ ▒▒███   ░ ▓██▄   ▒ ▓██░ ▒░   ▒████ ░▒██▒▒██░▄▄▄░▒██▀▀██░▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒
-  ░▓█▒  ░▒██   ██░▒██▀▀█▄  ▒▓█  ▄   ▒   ██▒░ ▓██▓ ░    ░▓█▒  ░░██░░▓█  ██▓░▓█ ░██ ░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄  
-  ░▒█░   ░ ████▓▒░░██▓ ▒██▒░▒████▒▒██████▒▒  ▒██▒ ░    ░▒█░   ░██░░▒▓███▀▒░▓█▒░██▓  ▒██▒ ░ ░▒████▒░██▓ ▒██▒
-   ▒ ░   ░ ▒░▒░▒░ ░ ▒▓ ░▒▓░░░ ▒░ ░▒ ▒▓▒ ▒ ░  ▒ ░░       ▒ ░   ░▓   ░▒   ▒  ▒ ░░▒░▒  ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░
-   ░       ░ ▒ ▒░   ░▒ ░ ▒░ ░ ░  ░░ ░▒  ░ ░    ░        ░      ▒ ░  ░   ░  ▒ ░▒░ ░    ░     ░ ░  ░  ░▒ ░ ▒░
-   ░ ░   ░ ░ ░ ▒    ░░   ░    ░   ░  ░  ░    ░          ░ ░    ▒ ░░ ░   ░  ░  ░░ ░  ░         ░     ░░   ░ 
-             ░ ░     ░        ░  ░      ░                      ░        ░  ░  ░  ░            ░  ░   ░     
-                                                                                                           
-  ASCII
+    def welcome
+        self.class.play("forest_trim.mov")
+        sleep 0.5
+        puts "WELCOME TO \n #{FOREST_FIGHTER_LOGO}"
     end
     
     def played_before
         have_they_played_before = @prompt.yes?("Have you played this game before?")
         if have_they_played_before == true
-            user = User.find_user
-            return user
+            return User.find_user
         else
             user = User.create_user
             character = Character.create_character(user)
             return user
         end
     end
-    
-    def run
-        welcome
-        user = played_before
+
+    def loading_screen
         sleep 3
         system "clear"
         spinner = TTY::Spinner.new("Loading main menu ... [:spinner]", format: :arrow_pulse)
         spinner.auto_spin # Automatic animation with default interval
         sleep 3
         spinner.stop('Done!')
-        game = Game.create(user:user)
-        self.class.kill_forest_sound
-        game.menu    
-    end
-
-    def self.play_forest_sound 
-        forest_pid = fork { `afplay music/forest_trim.mov` }
-        @@sounds["forest"] = forest_pid
-        Process.detach(forest_pid)
-    end
-
-    def self.kill_forest_sound
-        fork { exec "killall afplay" }
-        # Process.kill("SIGHUP", @@sounds["forest"])
     end
 
     def self.kill_all_sounds
-        fork { exec "killall afplay" }
+        pid = fork { `killall afplay` }
+        Process.detach(pid)
     end
 
     def self.exit
-        self.kill_all_sounds
+        exec "killall afplay"
         exit
     end
 
@@ -83,9 +62,3 @@ class GameRunner
 end
 
 GameRunner.new.run
-
-
-
-# puts dragon_image
-
-# puts "Run Goodbye"

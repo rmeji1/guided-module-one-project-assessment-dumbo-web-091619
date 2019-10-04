@@ -33,8 +33,6 @@ class Game < ActiveRecord::Base
       go_back_to_character_list
     end
 
- 
-
     def character_list
         user.reload
         system "clear"
@@ -63,11 +61,8 @@ class Game < ActiveRecord::Base
                 end
             end
         end
-            # binding.pry 
         self.menu
     end
-
-
 
     def pick_character
         user.reload
@@ -104,75 +99,55 @@ class Game < ActiveRecord::Base
     end
 
     def begin_game_for_character(character)
-        # system "clear"
         character.update(current_health: character.max_health)
         character.previous_choice_option = "fight"
         puts FOREST_IMAGE
-        start = @@prompt.select("You're standing in the middle of a dense forest. There are four paths: one going north, one going east, one going south, and one going west. Which path do you take?") do |prompt|
-            prompt.choice NORTH
-            prompt.choice EAST
-            prompt.choice SOUTH
-            prompt.choice WEST
-          end          
+        start_prompt  
 
-          while character.choices.count < 10 && character.current_health > 1 do
+        while character.choices.count < 10 && character.current_health > 1 do
             choice = Choice.create(character: character)
             choice.show_menu
             result = Result.create(choice: choice)
             if result.outcome
-                system "clear"
-            lost = <<-ASCII
-
-▓██   ██▓ ▒█████   █    ██     ██▓     ▒█████    ██████ ▄▄▄█████▓ ▐██▌  ▐██▌  ▐██▌ 
-▒██  ██▒▒██▒  ██▒ ██  ▓██▒   ▓██▒    ▒██▒  ██▒▒██    ▒ ▓  ██▒ ▓▒ ▐██▌  ▐██▌  ▐██▌ 
- ▒██ ██░▒██░  ██▒▓██  ▒██░   ▒██░    ▒██░  ██▒░ ▓██▄   ▒ ▓██░ ▒░ ▐██▌  ▐██▌  ▐██▌ 
- ░ ▐██▓░▒██   ██░▓▓█  ░██░   ▒██░    ▒██   ██░  ▒   ██▒░ ▓██▓ ░  ▓██▒  ▓██▒  ▓██▒ 
- ░ ██▒▓░░ ████▓▒░▒▒█████▓    ░██████▒░ ████▓▒░▒██████▒▒  ▒██▒ ░  ▒▄▄   ▒▄▄   ▒▄▄  
-  ██▒▒▒ ░ ▒░▒░▒░ ░▒▓▒ ▒ ▒    ░ ▒░▓  ░░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░  ▒ ░░    ░▀▀▒  ░▀▀▒  ░▀▀▒ 
-▓██ ░▒░   ░ ▒ ▒░ ░░▒░ ░ ░    ░ ░ ▒  ░  ░ ▒ ▒░ ░ ░▒  ░ ░    ░     ░  ░  ░  ░  ░  ░ 
-▒ ▒ ░░  ░ ░ ░ ▒   ░░░ ░ ░      ░ ░   ░ ░ ░ ▒  ░  ░  ░    ░          ░     ░     ░ 
-░ ░         ░ ░     ░            ░  ░    ░ ░        ░            ░     ░     ░    
-░ ░                                                                               
-ASCII
-              @@prompt.say(lost, color: :red) 
-              GameRunner.play("losing.mov")
-              sleep 5
-              user.losses += 1
-              user.save
-              user.reload
-            #   sleep 3
-              break
+                player_lost() 
+                break 
             end
-          end   
-          
-          if character.choices.count == 10
+        end
+        did_win(character)
+        character.choices.delete_all
+        character.reload
+        menu
+    end
+
+    def start_prompt
+        @@prompt.select("You're standing in the middle of a dense forest. There are four paths: one going north, one going east, one going south, and one going west. Which path do you take?") do |prompt|
+            prompt.choice NORTH
+            prompt.choice EAST
+            prompt.choice SOUTH
+            prompt.choice WEST
+          end        
+    end
+
+    def player_lost
+        system "clear"
+        @@prompt.say(LOST_IMAGE, color: :red) 
+        GameRunner.play("losing.mov")
+        sleep 5
+        user.losses += 1
+        user.save
+        user.reload
+    end
+
+    def did_win(character)
+        if character.choices.count == 10
             system "clear"
-            you_won = <<-ASCII
-
-            ▓██   ██▓ ▒█████   █    ██     █     █░ ▒█████   ███▄    █  ▐██▌  ▐██▌  ▐██▌ 
-            ▒██  ██▒▒██▒  ██▒ ██  ▓██▒   ▓█░ █ ░█░▒██▒  ██▒ ██ ▀█   █  ▐██▌  ▐██▌  ▐██▌ 
-             ▒██ ██░▒██░  ██▒▓██  ▒██░   ▒█░ █ ░█ ▒██░  ██▒▓██  ▀█ ██▒ ▐██▌  ▐██▌  ▐██▌ 
-             ░ ▐██▓░▒██   ██░▓▓█  ░██░   ░█░ █ ░█ ▒██   ██░▓██▒  ▐▌██▒ ▓██▒  ▓██▒  ▓██▒ 
-             ░ ██▒▓░░ ████▓▒░▒▒█████▓    ░░██▒██▓ ░ ████▓▒░▒██░   ▓██░ ▒▄▄   ▒▄▄   ▒▄▄  
-              ██▒▒▒ ░ ▒░▒░▒░ ░▒▓▒ ▒ ▒    ░ ▓░▒ ▒  ░ ▒░▒░▒░ ░ ▒░   ▒ ▒  ░▀▀▒  ░▀▀▒  ░▀▀▒ 
-            ▓██ ░▒░   ░ ▒ ▒░ ░░▒░ ░ ░      ▒ ░ ░    ░ ▒ ▒░ ░ ░░   ░ ▒░ ░  ░  ░  ░  ░  ░ 
-            ▒ ▒ ░░  ░ ░ ░ ▒   ░░░ ░ ░      ░   ░  ░ ░ ░ ▒     ░   ░ ░     ░     ░     ░ 
-            ░ ░         ░ ░     ░            ░        ░ ░           ░  ░     ░     ░    
-            ░ ░                                                                         
-            ASCII
-
-            @@prompt.say(you_won, color: :bright_blue) 
+            @@prompt.say(WON_IMAGE, color: :bright_blue) 
             puts "\n\nYou made it outside of the forest. You're free!\n\n\n"
             GameRunner.play("winning.mov")
             sleep 5
             user.wins += 1
             user.save
             user.reload
-            # sleep 4
           end
-          
-          character.choices.delete_all
-          character.reload
-          menu
     end
 end
