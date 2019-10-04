@@ -128,7 +128,7 @@ class Result < ActiveRecord::Base
             character.current_health -= 5
             put("Oh no! The stranger attacks you and hits you for 5 damage.\n\n", :bright_red) 
         end   
-        puts "Your health is now #{character.current_health}.\n\n"  
+        puts "Your health is now #{character.current_health}.\n\n" unless character.current_health < 1
     end
 
     def succeed_or_die
