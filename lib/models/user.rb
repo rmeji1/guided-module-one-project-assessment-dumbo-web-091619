@@ -52,8 +52,16 @@ class User < ActiveRecord::Base
 
     def view_profile
         puts "Your username is #{self.username}."
-        puts "You have won #{self.wins} times."
-        puts "You have lost #{self.losses} times."
+        if self.wins == 1
+            puts "You have won 1 time."
+        else
+            puts "You have won #{self.wins} times."
+        end
+        if self.losses == 1
+            puts "You have lost 1 time."
+        else
+            puts "You have lost #{self.losses} times."
+        end
     end
 
     def update_user(game)

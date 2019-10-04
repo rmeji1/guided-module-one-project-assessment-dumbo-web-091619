@@ -100,6 +100,8 @@ class Game < ActiveRecord::Base
 
     def begin_game_for_character(character)
         character.update(current_health: character.max_health)
+        character.choices.delete_all
+        character.reload
         character.previous_choice_option = "fight"
         puts FOREST_IMAGE
         start_prompt  
@@ -115,8 +117,6 @@ class Game < ActiveRecord::Base
             end
         end
         did_win(character, lost)
-        character.choices.delete_all
-        character.reload
         menu
     end
 
