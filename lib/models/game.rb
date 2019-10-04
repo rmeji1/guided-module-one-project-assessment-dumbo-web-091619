@@ -103,17 +103,18 @@ class Game < ActiveRecord::Base
         character.previous_choice_option = "fight"
         puts FOREST_IMAGE
         start_prompt  
-
+        lost = false
         while character.choices.count < 10 && character.current_health > 1 do
             choice = Choice.create(character: character)
             choice.show_menu
             result = Result.create(choice: choice)
             if result.outcome
                 player_lost() 
+                lost = true
                 break 
             end
         end
-        did_win(character)
+        did_win(character, lost)
         character.choices.delete_all
         character.reload
         menu
@@ -138,8 +139,8 @@ class Game < ActiveRecord::Base
         user.reload
     end
 
-    def did_win(character)
-        if character.choices.count == 10
+    def did_win(character, lost)
+        if character.choices.count == 10 && !lost
             system "clear"
             @@prompt.say(WON_IMAGE, color: :bright_blue) 
             puts "\n\nYou made it outside of the forest. You're free!\n\n\n"
